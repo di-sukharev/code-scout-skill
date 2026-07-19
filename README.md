@@ -37,19 +37,10 @@ Invoke it explicitly:
 Use $code-scout to map the implementation and test surface before changing this behavior.
 ```
 
-For repository-level automatic use, keep only the local policy in `AGENTS.md`:
+For repository-level automatic use, add one local policy line to `AGENTS.md`:
 
 ```md
-## Initial code discovery
-
-- Use `$code-scout` once for non-trivial code tasks when the owning files,
-  entry points, or closest tests are unclear. Skip it for documentation-only
-  work, exact file-and-symbol edits, obvious local changes, or when the user
-  forbids delegation.
-- Give the scout the repository's current entry-point documentation, required
-  checks, applicable architecture guidance, and task constraints. Verify its
-  cited ranges and symbols against the current worktree before designing or
-  editing.
+- Use `$code-scout` for non-trivial code tasks that need repository discovery.
 ```
 
 ## What It Enforces
