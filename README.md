@@ -40,7 +40,9 @@ Use $code-scout to map the implementation and test surface before changing this 
 For repository-level automatic use, add one local policy line to `AGENTS.md`:
 
 ```md
-- Use `$code-scout` for non-trivial code tasks that need repository discovery.
+- Prefer `$code-scout` for non-trivial repository discovery to delegate broad
+  code reading to a lower-cost scout and keep irrelevant file contents out of
+  the primary agent's context.
 ```
 
 ## What It Enforces
