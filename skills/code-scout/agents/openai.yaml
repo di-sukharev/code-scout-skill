@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Scout"
+  short_description: "Map owning code and tests with a fresh scout"
+  default_prompt: "Use $code-scout to map the minimal evidence-backed implementation, test, and constraint surface before changing code."

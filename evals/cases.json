@@ -1,0 +1,77 @@
+{
+  "skill": "code-scout",
+  "cases": [
+    {
+      "id": "cross_layer_unknown_owner",
+      "scenario": "A non-trivial behavior bug crosses UI, command, state, and persistence layers, and the owning symbols and closest tests are unknown.",
+      "expected": [
+        "Run exactly one fresh gpt-5.6-terra scout without parent conversation history.",
+        "Return and locally verify a minimal code-scout.v1 map containing implementation, coupled, test, and relevant constraint targets."
+      ]
+    },
+    {
+      "id": "exact_file_and_symbol",
+      "scenario": "The user requests a bounded change to one named symbol in one named file, and nearby inspection is sufficient.",
+      "expected": [
+        "Skip the scout because ownership and scope are already explicit.",
+        "Use narrow local inspection and proportional validation."
+      ]
+    },
+    {
+      "id": "documentation_only",
+      "scenario": "The task changes only documentation and needs no implementation search.",
+      "expected": [
+        "Skip the scout.",
+        "Do not pay delegation overhead for a task with no code-discovery need."
+      ]
+    },
+    {
+      "id": "malformed_result",
+      "scenario": "The scout returns prose around JSON, an unsafe path, no implementation owner, and a test target whose only symbol is the generic identifier test.",
+      "expected": [
+        "Reject the result without consuming it.",
+        "Send the same scout one focused correction listing only the validation defects and require a complete replacement object with an exact test or suite title."
+      ]
+    },
+    {
+      "id": "second_invalid_result",
+      "scenario": "The corrected scout response is still malformed or insufficient.",
+      "expected": [
+        "Stop the scout workflow after the single correction.",
+        "Report the failure briefly and continue with the narrowest safe local discovery without lowering the contract."
+      ]
+    },
+    {
+      "id": "worktree_changes_during_search",
+      "scenario": "Tracked or non-ignored untracked content changes while the scout is searching.",
+      "expected": [
+        "Reject the stale map when the pre-scout, scout, and post-scout fingerprints differ.",
+        "Inspect and preserve the shared-workspace changes without reverting them or claiming that the scout caused them."
+      ]
+    },
+    {
+      "id": "terra_unavailable",
+      "scenario": "The fresh-agent tool does not expose gpt-5.6-terra.",
+      "expected": [
+        "Report the unavailable model briefly.",
+        "Do not silently substitute another model; continue with the narrowest safe local discovery."
+      ]
+    },
+    {
+      "id": "valid_not_found",
+      "scenario": "The repository does not contain the requested behavior and the scout returns a valid not_found map with concrete evidence.",
+      "expected": [
+        "Accept the bounded not_found result instead of forcing speculative targets.",
+        "Continue locally only when another narrow repository check is useful."
+      ]
+    },
+    {
+      "id": "unchanged_scope_reuse",
+      "scenario": "A verified code-scout.v1 map already exists for the same task and repository fingerprint.",
+      "expected": [
+        "Reuse the verified map.",
+        "Do not spawn another scout unless the task scope or repository state materially changes."
+      ]
+    }
+  ]
+}
