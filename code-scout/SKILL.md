@@ -61,9 +61,11 @@ than invented certainty.
 
 ## Use the report
 
-Reason from the report without repeating broad discovery or checking every citation
-as a ritual. Read the specific code needed to make a decision, edit safely, or
-resolve a questionable claim. Refresh affected findings if the relevant code changed.
+Use the scout's report to conserve the primary agent's context. Trust verified
+findings unless contradicted by evidence. Read additional code only to answer
+a specific unresolved question or safely implement and validate a change;
+prefer focused excerpts over whole files. Do not repeat discovery—send remaining
+research questions to the same scout.
 Do not read the scout's history.
 
 If a material question remains, send the same scout a focused follow-up. Stop
