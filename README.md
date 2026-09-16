@@ -1,76 +1,44 @@
 # Code Scout
 
-Code Scout packages the `code-scout` Agent Skill: a bounded initial repository
-discovery workflow for non-trivial code tasks whose owning files, entry points,
-coupled contracts, or closest tests are not yet known.
+Саб-агент делает первичный поиск по репозиторию и приносит основному агенту короткий
+отчёт: как работает текущая реализация, где находится нужный код, с чем он связан,
+какие есть тесты и что осталось неизвестным. Основной агент принимает решения
+и выполняет задачу, не повторяя весь поиск.
 
-The skill starts one fresh `gpt-5.6-terra` sub-agent without the orchestrator's
-conversation history and instructs it to stay read-only. The scout searches
-silently and returns a strict `code-scout.v1` evidence map. The primary agent
-verifies that map against the current worktree before designing or editing.
+Один свежий скаут без истории разговора. По умолчанию: Codex — `gpt-5.6-luna`,
+Claude Code — `sonnet`.
+Другую модель можно указать в запросе. Скаут только читает код; файлы не меняет,
+тесты и сборку не запускает. Если нужный код уже известен или отчёт ещё актуален,
+повторное исследование не требуется.
 
-## Install with Codex
+Отчёт — обычный Markdown, обычно до 500 слов, со ссылками на файлы и строки.
+Факты отделены от предположений и пробелов. Основной агент читает конкретные
+участки по мере необходимости; существенные пробелы уточняет у того же скаута.
 
-Ask Codex (or invoke `$skill-installer`) to install:
+## Установка
+
+Отправьте агенту:
 
 ```text
-Use $skill-installer to install the code-scout skill from
+Install the code-scout skill globally from
 https://github.com/di-sukharev/code-scout-skill/tree/master/skills/code-scout
 ```
 
-For local authoring, manually link the source into Codex's user skill directory:
+Или скопируйте `skills/code-scout` в `~/.codex/skills/` либо `~/.claude/skills/`.
+Нужны саб-агенты с доступом к выбранной модели.
 
-```bash
-mkdir -p "$HOME/.agents/skills"
-ln -s "$(pwd)/skills/code-scout" "$HOME/.agents/skills/code-scout"
-```
-
-Do not create the link if a skill named `code-scout` is already installed
-elsewhere. Codex detects new skills automatically; restart Codex if it does not
-appear.
-
-## Use
-
-Invoke it explicitly:
+## Использование
 
 ```text
-Use $code-scout to map the implementation and test surface before changing this behavior.
+Use $code-scout to find how authentication and session expiry work in this repo
+before implementing refresh-token support.
 ```
 
-For repository-level automatic use, add one local policy line to `AGENTS.md`:
+Для автоматического применения можно добавить в проектный `AGENTS.md`:
 
 ```md
-- Prefer `$code-scout` for non-trivial repository discovery to delegate broad
-  code reading to a lower-cost scout and keep irrelevant file contents out of
-  the primary agent's context.
+- Use $code-scout for initial repository research when the relevant implementation
+  is not yet known. Reuse current findings instead of repeating broad searches.
 ```
 
-## What It Enforces
-
-- One fresh `gpt-5.6-terra` scout with no parent conversation history.
-- A scout instructed to stay read-only, with no implementation or nested
-  delegation.
-- A compact `code-scout.v1` map of owners, couplings, tests, flows, and
-  constraints.
-- Content-sensitive worktree fingerprinting before and after the scout.
-- One focused correction for an invalid result, then a bounded local fallback.
-- Primary-agent ownership of design, implementation, and validation.
-
-Ordinary sub-agents inherit the primary agent's sandbox. The read-only prompt is
-a behavioral constraint, not a security boundary; use a custom read-only agent
-configuration when the current Codex surface supports one. Fingerprinting
-detects stale repository state but does not prevent side effects.
-
-## Repository Layout
-
-```text
-evals/cases.json                         Behavioral evaluation scenarios
-skills/code-scout/SKILL.md              Agent Skill source
-skills/code-scout/agents/openai.yaml    Skill UI metadata
-skills/code-scout/scripts/              Deterministic worktree fingerprinting
-tests/                                  Executable fingerprint regression tests
-```
-
-## License
-
-MIT
+[Полный протокол](skills/code-scout/SKILL.md). [MIT](LICENSE).

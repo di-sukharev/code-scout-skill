@@ -2,75 +2,74 @@
   "skill": "code-scout",
   "cases": [
     {
-      "id": "cross_layer_unknown_owner",
-      "scenario": "A non-trivial behavior bug crosses UI, command, state, and persistence layers, and the owning symbols and closest tests are unknown.",
+      "id": "unknown_implementation",
+      "scenario": "The primary agent needs to understand configuration loading and precedence before adding a new source; owning files and tests are unknown.",
       "expected": [
-        "Run exactly one fresh gpt-5.6-terra scout without parent conversation history.",
-        "Return and locally verify a minimal code-scout.v1 map containing implementation, coupled, test, and relevant constraint targets."
+        "Delegate the initial search to one fresh scout using the user's chosen model, or the platform default: gpt-5.6-luna in Codex, sonnet in Claude Code. Do not first map the implementation locally.",
+        "Give the scout the repository, task, questions, and research/report instructions.",
+        "Return a concise report of current behavior with code links, relevant tests, and explicit gaps."
       ]
     },
     {
-      "id": "exact_file_and_symbol",
-      "scenario": "The user requests a bounded change to one named symbol in one named file, and nearby inspection is sufficient.",
+      "id": "known_local_edit",
+      "scenario": "The task names the exact file and symbol, and nearby inspection is sufficient.",
       "expected": [
-        "Skip the scout because ownership and scope are already explicit.",
-        "Use narrow local inspection and proportional validation."
+        "Skip delegation and use a focused local read."
       ]
     },
     {
-      "id": "documentation_only",
-      "scenario": "The task changes only documentation and needs no implementation search.",
+      "id": "partial_findings",
+      "scenario": "The scout finds the implementation but cannot locate tests in the relevant directories.",
       "expected": [
-        "Skip the scout.",
-        "Do not pay delegation overhead for a task with no code-discovery need."
+        "Report the implementation with evidence and specify where tests were searched for.",
+        "Do not invent test coverage or claim repository-wide absence."
       ]
     },
     {
-      "id": "malformed_result",
-      "scenario": "The scout returns prose around JSON, an unsafe path, no implementation owner, and a test target whose only symbol is the generic identifier test.",
+      "id": "material_gap",
+      "scenario": "The first report identifies configuration sources but leaves precedence unresolved.",
       "expected": [
-        "Reject the result without consuming it.",
-        "Send the same scout one focused correction listing only the validation defects and require a complete replacement object with an exact test or suite title."
+        "Ask the same scout a focused question about precedence.",
+        "Stop retries if they add no evidence; resolve the gap locally or ask the user only for a necessary decision."
       ]
     },
     {
-      "id": "second_invalid_result",
-      "scenario": "The corrected scout response is still malformed or insufficient.",
+      "id": "unrelated_workspace_change",
+      "scenario": "An unrelated file changes while the scout researches stable configuration code.",
       "expected": [
-        "Stop the scout workflow after the single correction.",
-        "Report the failure briefly and continue with the narrowest safe local discovery without lowering the contract."
+        "Preserve the change and use relevant findings without requiring repository-wide fingerprints.",
+        "Refresh only findings affected by relevant code changes."
       ]
     },
     {
-      "id": "worktree_changes_during_search",
-      "scenario": "Tracked or non-ignored untracked content changes while the scout is searching.",
+      "id": "model_unavailable",
+      "scenario": "The selected scout model cannot be started.",
       "expected": [
-        "Reject the stale map when the pre-scout, scout, and post-scout fingerprints differ.",
-        "Inspect and preserve the shared-workspace changes without reverting them or claiming that the scout caused them."
+        "Report unavailability and continue with focused local research.",
+        "Do not silently substitute models."
       ]
     },
     {
-      "id": "terra_unavailable",
-      "scenario": "The fresh-agent tool does not expose gpt-5.6-terra.",
+      "id": "reuse_report",
+      "scenario": "An existing report answers the same questions and the relevant implementation has not changed.",
       "expected": [
-        "Report the unavailable model briefly.",
-        "Do not silently substitute another model; continue with the narrowest safe local discovery."
+        "Reuse the report; do not spawn another scout or repeat broad discovery."
       ]
     },
     {
-      "id": "valid_not_found",
-      "scenario": "The repository does not contain the requested behavior and the scout returns a valid not_found map with concrete evidence.",
+      "id": "read_only_research",
+      "scenario": "Tests and build scripts exist in the repository under investigation.",
       "expected": [
-        "Accept the bounded not_found result instead of forcing speculative targets.",
-        "Continue locally only when another narrow repository check is useful."
+        "Read relevant tests and configuration to identify available checks, but do not run tests or builds or modify files.",
+        "Distinguish code inspection from executed validation."
       ]
     },
     {
-      "id": "unchanged_scope_reuse",
-      "scenario": "A verified code-scout.v1 map already exists for the same task and repository fingerprint.",
+      "id": "consume_report",
+      "scenario": "The scout returns a useful report with code links and one clearly marked inference.",
       "expected": [
-        "Reuse the verified map.",
-        "Do not spawn another scout unless the task scope or repository state materially changes."
+        "Use the report to guide decisions and targeted code reads, without mandatory verification of every citation.",
+        "Treat the inference as unverified and resolve it if a decision depends on it."
       ]
     }
   ]
