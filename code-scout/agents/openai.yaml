@@ -1,4 +1,4 @@
 interface:
   display_name: "Code Scout"
-  short_description: "A subagent researches code and reports findings"
-  default_prompt: "Use $code-scout to research the current implementation, relevant dependencies, and tests, then continue the task from its concise report."
+  short_description: "A subagent maps the code needed for a task"
+  default_prompt: "Use $code-scout to locate the code relevant to this task, map its key connections and tests, then continue from the concise report."
