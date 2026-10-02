@@ -1,52 +1,59 @@
 ---
 name: code-scout
 description: >-
-  Save the primary agent's context during initial codebase discovery.
-  Use a scout to find task-relevant entry points and connections.
-  Skip when a focused read or current report is enough.
+  A cheaper scout agent maps the code that a task needs. Use before work in
+  unfamiliar code. Skip when a focused read or a current report is enough.
 ---
 
-## Dispatch
+## Goal
 
-Start one fresh scout without the parent conversation history:
+Code search fills your context with files that the task does not need.
+If no rule fits a case, keep broad code reading with a cheaper scout.
 
-- Claude Code: `subagent_type: effort-medium` and `model: sonnet`. For another effort, use the agent type with that effort or the nearest one, and report a substitution. If no such agent type exists, use `general-purpose` with the same model, and report that the scout inherits the session effort.
-- Codex: Luna, `reasoning_effort: medium`, and `fork_turns: "none"`. Use the longest `wait` timeout.
-- User model and effort choices override these settings.
-- Claude Code, if you run as a subagent: start the scout in the foreground. Do not continue it with `SendMessage`, because its report does not return to you.
+## Rules
 
-Give the scout the absolute repository path, task, research questions, constraints,
-and entry points already known. Do not search the code just to prepare the brief.
-Include the **Scout research** and **Scout report** instructions in the brief.
-Write the brief in English. Reuse reports that still apply.
-If delegation is unavailable, research locally.
+- Reuse a scout report that still applies.
+- Do not search the code before you start the scout.
+- If you cannot start agents, research the code yourself.
 
-## Scout research
+## Agents
 
-Read the project instructions. Do not edit files, run tests or builds, start agents, or use a browser.
-Use `rg`, `rg --files`, and focused reads to find the code that owns the behavior.
-Trace the callers, data flow, contracts, and tests needed to understand the task.
-If output is truncated, narrow the search. Separate facts, inferences, and unknowns.
-Stop when the primary agent has enough information to start implementation.
+- Claude Code: `subagent_type: general-purpose`, `model: sonnet`.
+- Codex: Luna, `reasoning_effort: medium`, `fork_turns: "none"`. Use the longest `wait_agent` timeout.
+- The user's model and effort choices override these settings.
+- Send the scout the Scout brief section verbatim, then the task context in English. Do not poll the scout.
+- As a Claude Code subagent, start the scout in the foreground. Do not continue it, because its replies do not reach you. For a follow-up, start a new scout with the brief, the task context, the last report, and the question.
 
-## Scout report
+## Steps
 
-Return a compact map in English, without search logs or routine status updates.
-Aim for 500 words or fewer. Use more words when essential evidence requires them.
+1. Start one scout. The task context is the absolute repository path, the task, research questions, constraints, and known entry points.
+2. Read only the code on the map that you need to implement and check the task.
+3. Send follow-up questions to the same scout.
 
-1. **Start here:** link to the relevant files and symbols with absolute paths and
-   current line numbers. State why each one matters.
-2. **Flow:** explain how these parts connect and which rules affect the task.
-3. **Checks:** list relevant tests, commands, and project constraints. Do not run them.
-4. **Gaps:** state what you could not verify or find, and where you searched.
-   Omit this section if there are no gaps.
+## Scout brief
 
-Avoid speculative fixes. Mark inferences as inferences.
+You are a scout. Your map lets the lead read only the code that the task needs.
 
-## Use the report
+### Work
 
-Use the map to read only the code needed to implement and validate the task.
-Repeat broad discovery only if the report is incomplete or stale.
-Send focused follow-up questions to the same scout.
-If you run as a subagent in Claude Code or cannot continue the scout,
-start a new scout with the brief and the previous report.
+- Read the project instructions.
+- Find the code that owns the behavior. Search before you read. Read only the ranges that you need.
+- Trace the callers, data model, data flow, contracts, and tests that the task needs.
+- Find code that the task can reuse.
+- If output is truncated, narrow the search.
+- Stop when the lead can start the implementation.
+
+### Limits
+
+Do not edit files, run checks, start agents, or use a browser.
+
+### Report
+
+Return a compact map in English, without search logs. Aim for 500 words or fewer.
+
+1. **Start here**: files and symbols with absolute paths and current line numbers, why each matters, and code to reuse.
+2. **Flow**: how these parts connect, and which rules affect the task.
+3. **Checks**: relevant tests, commands, and project constraints.
+4. **Gaps**: what you could not find or verify, and where you searched. Omit this section if there are none.
+
+Keep facts and inferences separate. Do not propose speculative fixes.

@@ -1,27 +1,23 @@
 # Code Scout
 
-Скилл передаёт первичный поиск по коду саб-агенту и экономит контекст основного
-агента. Scout находит нужные файлы, связи и тесты. Он возвращает короткую карту
-со ссылками на строки кода. Основной агент начинает работу с этой карты.
+Обычно дорогая модель сама ищет нужный код и читает много лишних файлов. Code Scout поручает поиск кода дешёвой модели. Дорогая модель получает короткую карту и читает только нужные файлы.
 
-Scout не меняет код и не запускает проверки. По умолчанию: Codex — Luna,
-Claude Code — Sonnet, effort `medium`. Модель и effort можно указать в запросе.
-Scout пишет отчёт на английском: так отчёт занимает меньше токенов.
+## Установка
 
-Установка — отправьте агенту:
+Отправьте агенту это сообщение.
 
 ```text
-Install this skill and its Claude agent globally: https://github.com/di-sukharev/code-scout-skill
+Установи скилл глобально https://github.com/di-sukharev/code-scout-skill
 ```
 
-Или скопируйте папку `code-scout` в `~/.codex/skills/` либо `~/.claude/skills/`.
-Для Claude Code скопируйте ещё `claude-agents/effort-medium.md` в `~/.claude/agents/`
-и перезапустите Claude Code. Без этого агента scout наследует effort сессии и стоит дороже.
+## Запуск
 
-Запуск:
+Напишите `/code-scout <задача>`. В Codex напишите `$code-scout <задача>`.
 
-```text
-Use $code-scout to find how authentication works before changing it.
-```
+## Другие скиллы
 
-[SKILL.md](code-scout/SKILL.md) · [MIT](LICENSE)
+- [Orchestration](https://github.com/di-sukharev/orchestration-skill) поручает чтение и написание кода дешёвой модели.
+- [Loop Tasks](https://github.com/di-sukharev/loop-tasks-skill) запускает для каждой задачи нового агента с чистым контекстом.
+- [Loop Code Review](https://github.com/di-sukharev/loop-code-review-skill) отдаёт код новому ревьюеру без истории чата.
+
+[Инструкция для агента](code-scout/SKILL.md) · [Лицензия MIT](LICENSE)
