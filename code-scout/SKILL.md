@@ -1,59 +1,32 @@
 ---
 name: code-scout
 description: >-
-  A cheaper scout agent maps the code that a task needs. Use before work in
-  unfamiliar code. Skip when a focused read or a current report is enough.
+  A cheaper scout maps the code a task needs to save tokens for a more capable
+  lead model. Use before broad research in unfamiliar code. Skip when a
+  focused read or a current report is enough.
 ---
 
-## Goal
+Use a scout to find the code a task needs and keep search results out of the lead's context.
+Reuse a report that still applies. Skip delegation when a focused read is enough.
+Follow project rules. Use English with the scout and the user's language with the user.
 
-Code search fills your context with files that the task does not need.
-If no rule fits a case, keep broad code reading with a cheaper scout.
+## Search
 
-## Rules
+Start one subagent without chat history. Choose a low-cost model and enough effort for the task. Follow the user's model and effort choices.
+Give it the absolute repository path, task, questions, constraints, known entry points, and scout brief below.
+If agents are unavailable, search the code yourself.
 
-- Reuse a scout report that still applies.
-- Do not search the code before you start the scout.
-- If you cannot start agents, research the code yourself.
-
-## Agents
-
-- Claude Code: `subagent_type: general-purpose`, `model: sonnet`.
-- Codex: Luna, `reasoning_effort: medium`, `fork_turns: "none"`. Use the longest `wait_agent` timeout.
-- The user's model and effort choices override these settings.
-- Send the scout the Scout brief section verbatim, then the task context in English. Do not poll the scout.
-- As a Claude Code subagent, start the scout in the foreground. Do not continue it, because its replies do not reach you. For a follow-up, start a new scout with the brief, the task context, the last report, and the question.
-
-## Steps
-
-1. Start one scout. The task context is the absolute repository path, the task, research questions, constraints, and known entry points.
-2. Read only the code on the map that you need to implement and check the task.
-3. Send follow-up questions to the same scout.
+Use the map to read the code needed to implement and check the task. Ask the same scout to resolve gaps.
 
 ## Scout brief
 
-You are a scout. Your map lets the lead read only the code that the task needs.
-
-### Work
-
-- Read the project instructions.
-- Find the code that owns the behavior. Search before you read. Read only the ranges that you need.
-- Trace the callers, data model, data flow, contracts, and tests that the task needs.
-- Find code that the task can reuse.
-- If output is truncated, narrow the search.
-- Stop when the lead can start the implementation.
-
-### Limits
-
+Find the code that owns the requested behavior. Read project instructions first.
+Search before reading files. Read relevant ranges. Narrow searches when results are truncated.
+Trace the callers, data flow, data model, contracts, and tests needed for the task. Find existing code to reuse.
+Stop when the lead has enough information to start implementation.
 Do not edit files, run checks, start agents, or use a browser.
 
-### Report
-
-Return a compact map in English, without search logs. Aim for 500 words or fewer.
-
-1. **Start here**: files and symbols with absolute paths and current line numbers, why each matters, and code to reuse.
-2. **Flow**: how these parts connect, and which rules affect the task.
-3. **Checks**: relevant tests, commands, and project constraints.
-4. **Gaps**: what you could not find or verify, and where you searched. Omit this section if there are none.
-
-Keep facts and inferences separate. Do not propose speculative fixes.
+Return a compact map in English. Give absolute paths, symbols, current line numbers, and each location's purpose.
+Explain how the relevant parts connect and which project rules apply.
+Name code to reuse, relevant tests, and check commands.
+Report gaps and where you searched. Separate facts from inferences. Do not suggest fixes without evidence or include search logs.
